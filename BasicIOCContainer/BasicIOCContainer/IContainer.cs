@@ -1,8 +1,8 @@
 using System;
 
-namespace BasicIOCContainer
+namespace BasicIocContainer
 {
-    internal interface IContainer
+    public interface IContainer
     {
         void Register<TResolveFrom,TResolveTo>();
         T ResolveType<T>();

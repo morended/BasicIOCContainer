@@ -6,15 +6,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicIOCContainer
+namespace BasicIocContainer
 {
-    class BasicContainer : IContainer
+    public class BasicContainer : IContainer
     {
-        Dictionary<Type,Type> registeredTypes=new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Type> _registeredTypes = new Dictionary<Type, Type>();
 
-        public void Register<TResolveFrom,TResolveto>()
+        public void Register<TResolveFrom, TResolveto>() 
         {
-            registeredTypes.Add(typeof(TResolveFrom),typeof(TResolveto));
+            _registeredTypes.Add(typeof(TResolveFrom), typeof(TResolveto));
         }
 
         public T ResolveType<T>()
@@ -25,23 +25,26 @@ namespace BasicIOCContainer
         private object Resolve(Type typeToResolve)
         {
             Type resolvedType = null;
-            try
-            {
-                resolvedType = registeredTypes[typeToResolve];
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("This type {0} is not registered :"+ typeToResolve.FullName);
-            }
 
+            if (typeToResolve.GetConstructors().Length == 1 &&
+                typeToResolve.GetConstructors().First().GetParameters().Length == 0)
+            {
+                return Activator.CreateInstance(typeToResolve);
+            }
+            if (!_registeredTypes.ContainsKey(typeToResolve))
+            {
+                var exceptionMessage = $"Given Type {typeToResolve} is not Registered";
+                throw new TypeNotRegisteredException(exceptionMessage);
+            }
+            resolvedType = _registeredTypes[typeToResolve];
             return ResolveConstructorParameters(resolvedType);
-          
-           }
+        }
 
         private object ResolveConstructorParameters(Type resolvedType)
         {
-
+           
             var firstConstructor = resolvedType.GetConstructors().First();
+            
             if (firstConstructor.GetParameters().Length == 0)
             {
                 return Activator.CreateInstance(resolvedType);
@@ -52,7 +55,6 @@ namespace BasicIOCContainer
 
         private object[] GetInstanceFor(ParameterInfo[] constructorParameters)
         {
-
             IList<Object> parameters = new List<object>();
             foreach (var parameter in constructorParameters)
             {
