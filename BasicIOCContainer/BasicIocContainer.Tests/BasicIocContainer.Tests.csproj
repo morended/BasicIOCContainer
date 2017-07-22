@@ -78,6 +78,9 @@
   <ItemGroup>
     <Compile Include="BasicContainerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenario2.cs" />
+    <Compile Include="Scenario1.cs" />
+    <Compile Include="TestClasses.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="BasicContainer.cs" />
     <Compile Include="IContainer.cs" />
+    <Compile Include="LifeCycle.cs" />
+    <Compile Include="RegisteredType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeNotRegisteredException.cs" />
   </ItemGroup>

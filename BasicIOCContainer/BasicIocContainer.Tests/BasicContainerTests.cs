@@ -4,27 +4,28 @@ namespace BasicIocContainer.Tests
 {
     public class BasicContainerTests
     {
-
-        private readonly BasicContainer _classUnderTest;
-
         public BasicContainerTests()
         {
             _classUnderTest = new BasicContainer();
         }
 
+        private readonly BasicContainer _classUnderTest;
+
         [Fact]
-        public void when_register_type_return_nothing()
+        public void when_registered_with_valid_generic_arguments_succeeds()
         {
-            _classUnderTest.Register<ICalculator,ScientificCalculator>();
+            _classUnderTest.Register<ICalculator, ScientificCalculator>();
         }
 
         [Fact]
-        public void when_resolving_unregistered_type()
+        public void when_register_with_valid_generic_arguments_and_life_cycle_method_succeeds()
         {
-            Assert.Throws<TypeNotRegisteredException>(() => _classUnderTest.ResolveType<ICalculator>());
+            _classUnderTest.Register<ICalculator, ScientificCalculator>(LifeCycle.Singleton);
         }
 
+
         [Fact]
+
         public void when_resolving_noparameter_constructor_type()
         {
             var resolvedType = _classUnderTest.ResolveType<Addition>().GetType().FullName;
@@ -34,87 +35,67 @@ namespace BasicIocContainer.Tests
         [Fact]
         public void when_resolving_parameter_constructor_type()
         {
-           _classUnderTest.Register<ICalculator, ScientificCalculator>();
-           var resolvedType = _classUnderTest.ResolveType<ICalculator>();
-            Assert.Equal(resolvedType.Add(1,2),3);
+            _classUnderTest.Register<ICalculator, ScientificCalculator>();
+            var resolvedType = _classUnderTest.ResolveType<ICalculator>();
+            Assert.Equal(resolvedType.Add(1, 2), 3);
+        }
+
+        [Fact]
+        public void when_resolving_test_if_new_instance_is_returned_when_transient()
+        {
+            _classUnderTest.Register<ICalculator, ScientificCalculator>();
+            var resolvedType = _classUnderTest.ResolveType<ICalculator>();
+            var resolvedType1 = _classUnderTest.ResolveType<ICalculator>();
+            Assert.NotSame(resolvedType1, resolvedType);
+        }
+
+        [Fact]
+        public void when_resolving_a_singleton_new_instance_is_not_created()
+        {
+            _classUnderTest.Register<ICalculator, ScientificCalculator>(LifeCycle.Singleton);
+            var resolvedType = _classUnderTest.ResolveType<ICalculator>();
+            var resolvedType1 = _classUnderTest.ResolveType<ICalculator>();
+            Assert.Same(resolvedType1, resolvedType);
+        }
+
+        [Fact]
+        public void when_resolving_test_if_singleton()
+        {
+            _classUnderTest.Register<ICalculator, SimpleCalculator>();
+            _classUnderTest.Register<Addition, Addition>(LifeCycle.Singleton);
+            var resolvedType = _classUnderTest.ResolveType<ICalculator>();
+            var resolvedType1 = _classUnderTest.ResolveType<ICalculator>();
+        }
+
+        [Fact]
+        public void when_resolving_unregistered_type()
+        {
+            Assert.Throws<TypeNotRegisteredException>(() => _classUnderTest.ResolveType<ICalculator>());
+        }
+
+        [Fact]
+        public void test_scenario1_succeeds()
+        {
+            _classUnderTest.Register<A,B>();
+            var resolvedType = _classUnderTest.ResolveType<A>();
+            Assert.Equal(1,resolvedType.print());
+        }
+        [Fact]
+        public void test_scenario2_with_lifecycle_singleton_succeeds()
+        {
+            _classUnderTest.Register<U, V>();
+            _classUnderTest.Register<W,W>(LifeCycle.Singleton);
+            _classUnderTest.Register<Y, Y>(LifeCycle.Singleton);
+            var resolvedType = _classUnderTest.ResolveType<U>();
+            Assert.Equal(4, resolvedType.print());
+        }
+
+        [Fact]
+        public void test_scenario2_with_lifecycle_transient_succeeds()
+        {
+            _classUnderTest.Register<U, V>();
+            var resolvedType = _classUnderTest.ResolveType<U>();
+            Assert.Equal(7, resolvedType.print());
         }
     }
-
-    interface ICalculator
-    {
-        int Add(int i, int j);
-        int Substract(int i, int j);
-
-    }
-
-    class SimpleCalculator : ICalculator
-    {
-        private readonly Addition _addition;
-        private readonly Substraction _substraction;
-
-
-        public SimpleCalculator(Addition addition, Substraction substraction)
-        {
-            this._addition = addition;
-            this._substraction = substraction;
-        }
-
-        public int Add(int i, int j)
-        {
-            return _addition.Add(i, j);
-        }
-
-        public int Substract(int i, int j)
-        {
-            return _substraction.Substract(i, j);
-        }
-    }
-
-    class ScientificCalculator : ICalculator
-    {
-        private readonly Addition _addition;
-        private readonly Substraction _substraction;
-
-        public ScientificCalculator(Addition addition, Substraction substraction)
-        {
-            this._addition = addition;
-            this._substraction = substraction;
-        }
-        public int Add(int i, int j)
-        {
-            return _addition.Add(i, j);
-        }
-
-        public int Substract(int i, int j)
-        {
-            return _substraction.Substract(i, j);
-        }
-    }
-
-    class Addition
-    {
-       /* private int a;
-        private int b;
-        Addition(int a, int b)
-        {
-            this.a = a;
-            this.b = b;
-        }*/
-        public int Add(int a, int b)
-        {
-            return a+b;
-        }
-    }
-
-    class Substraction
-    {
-
-        public int Substract(int i, int j)
-        {
-            return i - j;
-        }
-    }
-
-
-
 }

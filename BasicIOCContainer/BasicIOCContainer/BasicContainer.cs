@@ -2,65 +2,82 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BasicIocContainer
 {
     public class BasicContainer : IContainer
     {
-        private readonly Dictionary<Type, Type> _registeredTypes = new Dictionary<Type, Type>();
+        private readonly IDictionary<Type, RegisteredType> _registeredObjects = new Dictionary<Type, RegisteredType>();
 
-        public void Register<TResolveFrom, TResolveto>() 
+        public void Register<TResolveFrom, TResolveto>()
+            where TResolveto : class 
+            where TResolveFrom:class 
         {
-            _registeredTypes.Add(typeof(TResolveFrom), typeof(TResolveto));
+            Register<TResolveFrom, TResolveto>(LifeCycle.Transient);
+        }
+
+        public void Register<TResolveFrom, TResolveto>(LifeCycle lifeCycle) 
+            where TResolveto : class 
+            where TResolveFrom:class
+        {
+            var registeredType = new RegisteredType(typeof(TResolveFrom), typeof(TResolveto), lifeCycle);
+
+            if (_registeredObjects.ContainsKey(typeof(TResolveFrom)))
+                _registeredObjects[typeof(TResolveFrom)] = registeredType;
+            else
+                _registeredObjects.Add(typeof(TResolveFrom), registeredType);
         }
 
         public T ResolveType<T>()
         {
-            return (T) (Resolve(typeof(T)));
+            return (T) Resolve(typeof(T));
         }
 
         private object Resolve(Type typeToResolve)
         {
-            Type resolvedType = null;
+           
+           RegisteredType registeredType = ConstructRegisterType(typeToResolve);
+            if (registeredType == null)
+            {
+                throw new TypeNotRegisteredException(typeToResolve?.FullName);
+            }
 
-            if (typeToResolve.GetConstructors().Length == 1 &&
-                typeToResolve.GetConstructors().First().GetParameters().Length == 0)
-            {
-                return Activator.CreateInstance(typeToResolve);
-            }
-            if (!_registeredTypes.ContainsKey(typeToResolve))
-            {
-                var exceptionMessage = $"Given Type {typeToResolve} is not Registered";
-                throw new TypeNotRegisteredException(exceptionMessage);
-            }
-            resolvedType = _registeredTypes[typeToResolve];
-            return ResolveConstructorParameters(resolvedType);
+            if (registeredType.LifeCycle == LifeCycle.Singleton && registeredType.Instance != null)
+                return registeredType.Instance;
+
+            return ResolveConstructorParameters(registeredType);
         }
 
-        private object ResolveConstructorParameters(Type resolvedType)
+        private RegisteredType ConstructRegisterType(Type typeToResolve)
         {
-           
-            var firstConstructor = resolvedType.GetConstructors().First();
-            
-            if (firstConstructor.GetParameters().Length == 0)
+            RegisteredType registeredType = null;
+            if (_registeredObjects.ContainsKey(typeToResolve))
             {
-                return Activator.CreateInstance(resolvedType);
+                registeredType = _registeredObjects[typeToResolve];
             }
-            var constructorParameters = firstConstructor.GetParameters();
-            return firstConstructor.Invoke(GetInstanceFor(constructorParameters));
+            else if (typeToResolve != null && !typeToResolve.IsInterface)
+            {
+                registeredType = new RegisteredType(typeToResolve, typeToResolve, LifeCycle.Transient);
+                _registeredObjects.Add(typeToResolve, registeredType);
+            }
+            return registeredType;
+        }
+
+        private object ResolveConstructorParameters(RegisteredType registeredType)
+        {
+            var firstConstructor = registeredType.ConcreteType.GetConstructors()
+                .OrderByDescending(x => x.GetParameters().Length).First();
+            var constructorParameters = GetInstanceFor(firstConstructor.GetParameters());
+            registeredType.CreateInstance(constructorParameters);
+            return registeredType.Instance;
         }
 
         private object[] GetInstanceFor(ParameterInfo[] constructorParameters)
         {
-            IList<Object> parameters = new List<object>();
-            foreach (var parameter in constructorParameters)
-            {
-                parameters.Add(Resolve(parameter.ParameterType));
-            }
-
+            IList<object> parameters = constructorParameters.Select(parameter => parameter.ParameterType.IsPrimitive
+                    ? parameter.ParameterType.TypeInitializer
+                    :Resolve(parameter.ParameterType))
+                .ToList();
             return parameters.ToArray();
         }
     }

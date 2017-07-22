@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BasicIocContainer
 {
     using System;
-
+  
     public class TypeNotRegisteredException : Exception
-    {
-        public TypeNotRegisteredException()
+    {   
+        public TypeNotRegisteredException(String message):base(GenerateMessage(message))
         {
+          
         }
-        public TypeNotRegisteredException(string message)
-            : base(message)
+       
+        private static string GenerateMessage(Object message)
         {
-         }
-
-        public TypeNotRegisteredException(string message, Exception inner)
-            : base(message, inner)
-        {
+            return $"Type not Registered. [{message}]";
         }
     }
 }
