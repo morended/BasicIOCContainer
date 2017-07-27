@@ -1,0 +1,45 @@
+﻿
+@model MoviesApp.Models.MovieViewModel
+
+
+<div class="container">
+    <div class="panel panel-info" style="width:900px;height:500px;margin-left:100px">
+        <div class="panel-body">
+            @using (Html.BeginForm("AddMovie", "Home", "POST"))
+            {
+                <fieldset>
+                    <legend>Add Movie</legend>
+                    <div>
+                        @Html.LabelFor(m => m.Title)
+                        @Html.TextBoxFor(m => m.Title)
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.ImageUrl, "Image:")
+                        @Html.DropDownList("movieImages", new List<SelectListItem>()
+                        {
+                            new SelectListItem() {Text = "Doctor Strange", Value = "1"},
+                            new SelectListItem() {Text = "Moana", Value = "2"},
+                            new SelectListItem() {Text = "Trolls", Value = "3"},
+                            new SelectListItem() {Text = "Arrival", Value = "4"},
+                            new SelectListItem() {Text = "Almost Christmas", Value = "5"}
+                        })
+
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description)
+                    </div>
+
+                    <div>
+                        <label>&nbsp;</label>
+                        <input type="submit" value="Submit"/>
+                    </div>
+                </fieldset>
+            }
+            
+        </div>
+
+    </div>
+
+</div>
+

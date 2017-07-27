@@ -28,10 +28,8 @@ namespace BasicIocContainer
 
         public LifeCycle LifeCycle { get; set; }
 
-
         public void CreateInstance(object[] constructorParameters)
         {
-           
             this.Instance = Activator.CreateInstance(ConcreteType, constructorParameters);
         }
        

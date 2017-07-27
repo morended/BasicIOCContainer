@@ -1,0 +1,41 @@
+
+
+form {
+    /* Just to center the form on the page */
+    margin: 0 auto;
+    width: 500px;
+    /* To see the outline of the form */
+    padding: 10em;
+    border: 1px solid #CCC;
+    border-radius: 1em;
+	background:#CCC;
+}
+label {
+    /* To make sure that all labels have the same size and are properly aligned */
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+}
+
+input{
+   
+    font: 1em sans-serif;
+	width: 300px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+		border: 1px solid #999;
+}
+form div + div {
+    margin-top: 1em;
+}
+
+button {
+    padding-left: 20px;
+	padding-right: 20px;
+	    margin-left: 9.5em;
+}
+.button1 .button2 {
+display:inline-block;
+
+}
+

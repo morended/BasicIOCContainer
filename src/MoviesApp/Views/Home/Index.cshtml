@@ -1,0 +1,31 @@
+﻿@model IEnumerable<MoviesApp.Models.Movie>
+    
+<div class="container">
+
+<!-- Page Header -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Buy Movie Tickets
+                <small>Now Playing</small>
+            </h1>
+        </div>
+    </div>
+    <div class='row'>
+      
+
+        @foreach (var movie in Model)
+        {
+            <div class="col-md-4 portfolio-item">
+                <img class="img-responsive" width="360" height="206" src="../../images/@(movie.Id).jpg"/>
+                <h3>
+                    @Html.ActionLink(movie.Title, "Detail", new {id = movie.Id})
+                </h3>
+                <p>
+                    ReleaseDate: @movie.ReleaseDate
+
+                </p>
+
+            </div>
+        }
+    </div>
+</div>

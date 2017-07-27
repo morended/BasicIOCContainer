@@ -1,0 +1,140 @@
+.flex-grid {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+	
+    margin-top: 10;
+    
+   
+}
+.flex-grid-grouping-one {
+    
+	 
+    width: 300px;
+	    margin: 0 10px;
+		background:#262626;
+	
+}
+small .star-icon.full {
+    background-position: -17px 0px;
+}
+.movie-detail-section {
+    float: none;
+    width: 100%;
+    margin-bottom: 1px;
+	color: #ccc;
+	
+}
+.movie-poster {
+    float: left;
+    width: 164px;
+}
+
+
+.movie-detail-container {
+   
+             float: left;
+    height: 250px;
+    margin: 0;
+    width: 136px;
+    
+}
+.movie-detail {
+    width: 100%;
+    text-align: center;
+    min-height: 250px;
+    position: relative;
+    font-family: "Times New Roman";
+    font-style: italic;
+	    
+}
+.movie-detail-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    font-size: 0.929em;
+	
+    line-height: 1.4;
+    padding-bottom: 15px;
+}
+.movie-detail-release-status {
+    padding-top: 15px;
+}
+.movie-detail-release-date {
+    color: #FFF;
+    text-transform: uppercase;
+    font-family: "alternate-gothic-no-1-d", "Futura Condensed", "Arial Narrow", Arial, sans-serif;
+    font-size: 1.857em;
+    line-height: 1;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-style: normal;
+	
+}
+.movie-detail-release-date-note {
+    font-style: normal;
+    font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    padding: 0 10px;
+}
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+.movie-detail .rating-container {
+    padding-top: 15px;
+}
+.light {
+    color: #fff;
+}
+a:-webkit-any-link {
+  
+    text-decoration: none;
+  
+}
+.showtimes-widget-theater {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.media-descriptions {
+    width: 81%;
+    padding: 14px 0;
+    color: #ccc;
+    height: 96px !important;
+}
+.flex-grid-grouping-two {
+    
+	display: flex;
+	    
+}
+.trailer-container {
+    position: relative;
+}
+.featured-movie-trailer {
+    
+    min-width: 600px;
+    max-width: 620px;
+	    margin: 0 10px;
+}
+.media-player.placeholder {
+    min-height: 350px;
+    background-size: cover;
+    cursor: pointer;
+	    background-image: url(images/1large.jpg);
+}
+.flex-grid-sub-grouping {
+    
+   
+    
+    margin: 0 0 0 0;
+	display:block;
+}
+
+
+.content-item-container {
+	width:100%;
+	margin-bottom: 20px;
+	padding: 0 .5rem;
+    position: relative;
+}
